@@ -1,0 +1,13 @@
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1126,5): warning MSB4211: La propiedad "GetTargetPathDependsOn" se va a establecer en un valor por primera vez, pero ya se utilizó en "C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\Microsoft.Common.CurrentVersion.targets (2243,5)".
+  ofxsCore.cpp
+  ofxsHWNDInteract.cpp
+  ofxsImageEffect.cpp
+  ofxsInteract.cpp
+  ofxsLog.cpp
+C:\Repositorio\LibreVegas\Library\ofxsLog.cpp(63,37): warning C4996: 'getenv': This function or variable may be unsafe. Consider using _dupenv_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  ofxsMultiThread.cpp
+  ofxsParams.cpp
+  ofxsProperty.cpp
+  ofxsPropertyValidation.cpp
+  Generando código...
+  ofxsupport.vcxproj -> C:\Repositorio\LibreVegas\Library\Release-x64\ofxsupport.lib

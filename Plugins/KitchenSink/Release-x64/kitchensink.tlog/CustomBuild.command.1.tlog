@@ -1,0 +1,2 @@
+^C:\REPOSITORIO\LIBREVEGAS\PLUGINS\KITCHENSINK\KITCHENSINK.XML
+copy "C:\Repositorio\LibreVegas\Plugins\KitchenSink\kitchensink.xml" "../.\Release-x64\kitchensink.ofx.bundle/Contents/Resources/kitchensink.xml"

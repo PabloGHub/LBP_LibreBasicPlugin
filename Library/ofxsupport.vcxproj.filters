@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{89682f21-80bf-4ca3-878f-5cb8205bd2f2}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;rc;def;r;odl;idl;hpj;bat</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{73383e7b-50b6-4539-aa2c-52532e14db9a}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl</Extensions>
+    </Filter>
+    <Filter Include="OFX Header Files">
+      <UniqueIdentifier>{627950e4-7376-4367-90e0-92ae8af53665}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ofxsCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsHWNDInteract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsImageEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsInteract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsLog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsMultiThread.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsParams.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsProperty.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ofxsPropertyValidation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\ofxsCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsHWNDInteract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsImageEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsInteract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsLog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsMemory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsMessage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsMultiThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ofxsParam.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ofxsSupportPrivate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxCore.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxImageEffect.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxInteract.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxKeySyms.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxMemory.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxMessage.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxMultiThread.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxParam.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxProgress.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxProperty.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxSonyVegas.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ofxTimeLine.h">
+      <Filter>OFX Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

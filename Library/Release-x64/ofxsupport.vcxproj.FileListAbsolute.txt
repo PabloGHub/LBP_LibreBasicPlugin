@@ -1,0 +1,1 @@
+C:\Repositorio\LibreVegas\Library\Release-x64\ofxsupport.lib
