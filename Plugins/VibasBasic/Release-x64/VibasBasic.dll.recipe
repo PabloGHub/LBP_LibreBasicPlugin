@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\Repositorio\LibreVegas\Plugins\VibasBasic\Release-x64\VibasBasic.dll</FullPath>
+      <FullPath>C:\Repositorio\LBP_LibreBasicPlugin\Plugins\VibasBasic\Release-x64\VibasBasic.dll</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />

@@ -13,6 +13,11 @@
 #include "ofxsMultiThread.h"
 
 #include "../include/ofxsProcessing.H"
+#include "ofxMessage.h"
+
+#include <iostream>
+#include <fstream>
+
 //#include <cmath>
 
 /*
@@ -35,16 +40,21 @@ class VibraBasicPlugin : public OFX::ImageEffect
 		_frecuencia = fetchDoubleParam("Frecuencia/Frequency");
 		_inicial = fetchDoubleParam("Inicio/Starting");
         _modo = fetchChoiceParam("Modo/Mode");
+		_aDonde = fetchChoiceParam("Donde/Where");
+		crearConsola();
     }
 
     virtual void render(const OFX::RenderArguments& args) override
     {
         // Obtener los parámetros de vibración
-        double amplitude = _amplitud->getValueAtTime(args.time);
-        double frequency = _frecuencia->getValueAtTime(args.time);
-        double initialPoint = _inicial->getValueAtTime(args.time);
-        int modo;  /* = */ _modo->getValueAtTime(args.time, modo);
+        double amplitude =      _amplitud->getValueAtTime(args.time);
+        double frequency =      _frecuencia->getValueAtTime(args.time);
+        double initialPoint =   _inicial->getValueAtTime(args.time);
+        int modo;   /* = */    _modo->getValueAtTime(args.time, modo);
+		int aDonde; /* = */    _aDonde->getValueAtTime(args.time, aDonde);
         double tiempo = args.time * frequency; //fmod(args.time, 2 * 3.14159265359 / frequency);
+        
+		std::cout << "MQM" << std::endl;
 
         // Obtener la imagen de entrada
         OFX::Clip* srcClip = fetchClip("Source");
@@ -54,76 +64,176 @@ class VibraBasicPlugin : public OFX::ImageEffect
         OFX::Clip* dstClip = fetchClip("Output");
         OFX::Image* dstImg = dstClip->fetchImage(args.time);
 
-
-        // Aplicar el efecto de vibración
-        if (srcImg && dstImg)
+        // Comprobar si se le aplicar al "transform" de la propia imagen.
+        if (aDonde == 0)
         {
-            OfxRectI srcBounds = srcImg->getBounds();
-            OfxRectI dstBounds = dstImg->getBounds();
-
-            for (int y = srcBounds.y1; y < srcBounds.y2; ++y)
+            // Aplicar el efecto de vibración
+            if (srcImg && dstImg)
             {
-                for (int x = srcBounds.x1; x < srcBounds.x2; ++x)
+                OfxRectI srcBounds = srcImg->getBounds();
+                OfxRectI dstBounds = dstImg->getBounds();
+
+                for (int y = srcBounds.y1; y < srcBounds.y2; ++y)
                 {
-                    // Calcular el desplazamiento aleatorio
-                    int offsetX = 0;
-                    int offsetY = 0;
-
-					// O = Circular, | = Vertical, - = Horizontal, / = Diagonal, \ = Diagonal Inversa
-                    switch (modo)
-                    { 
-					    case 0: // Circular
-						    offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
-						    offsetY = static_cast<int>(amplitude * cos(tiempo + initialPoint));
-					    break;
-
-                        case 1: // Vertical
-                            offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
-                        break;
-
-                        case 2: // Horizontal
-                            offsetX = static_cast<int>(amplitude * cos(tiempo + initialPoint));
-                        break;
-
-                        case 3: // Diagonal
-                            offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
-                            offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
-                        break;
-
-                        case 4: // Diagonal Inversa
-                            offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
-                            offsetY = static_cast<int>(-amplitude * sin(tiempo + initialPoint));
-                        break;
-
-						case 5: // Aleatorio
-							// TODO: Implementar
-                        break;
-                    }
-
-                    // Suavizar los desplazamientos acumulándolos
-                    offsetX = static_cast<int>((_previoOffsetX + offsetX) * 0.5);
-                    offsetY = static_cast<int>((_previoOffsetY + offsetY) * 0.5);
-
-                    // Asegurarse de que los desplazamientos estén dentro de los límites
-                    int srcX = x + offsetX;
-                    int srcY = y + offsetY;
-
-                    if (srcX >= srcBounds.x1 && srcX < srcBounds.x2 && srcY >= srcBounds.y1 && srcY < srcBounds.y2)
+                    for (int x = srcBounds.x1; x < srcBounds.x2; ++x)
                     {
-                        float* dstPixel = static_cast<float*>(dstImg->getPixelAddress(x, y));
-                        float* srcPixel = static_cast<float*>(srcImg->getPixelAddress(srcX, srcY));
+                        // Calcular el desplazamiento aleatorio
+                        int offsetX = 0;
+                        int offsetY = 0;
 
-                        dstPixel[0] = srcPixel[0];
-                        dstPixel[1] = srcPixel[1];
-                        dstPixel[2] = srcPixel[2];
-                        dstPixel[3] = srcPixel[3];
+                        // O = Circular, | = Vertical, - = Horizontal, / = Diagonal, \ = Diagonal Inversa
+                        switch (modo)
+                        {
+                            case 0: // Circular
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(amplitude * cos(tiempo + initialPoint));
+                            break;
+
+                            case 1: // Vertical
+                                offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                            break;
+
+                            case 2: // Horizontal
+                                offsetX = static_cast<int>(amplitude * cos(tiempo + initialPoint));
+                            break;
+
+                            case 3: // Diagonal
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                            break;
+
+                            case 4: // Diagonal Inversa
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(-amplitude * sin(tiempo + initialPoint));
+                            break;
+
+                            case 5: // Aleatorio
+                                // TODO: Implementar
+                            break;
+                        }
+
+                        // Suavizar los desplazamientos acumulándolos
+                        offsetX = static_cast<int>((_previoOffsetX + offsetX) * 0.5);
+                        offsetY = static_cast<int>((_previoOffsetY + offsetY) * 0.5);
+
+                        // Asegurarse de que los desplazamientos estén dentro de los límites
+                        int srcX = x + offsetX;
+                        int srcY = y + offsetY;
+
+                        if (srcX >= srcBounds.x1 && srcX < srcBounds.x2 && srcY >= srcBounds.y1 && srcY < srcBounds.y2)
+                        {
+                            float* dstPixel = static_cast<float*>(dstImg->getPixelAddress(x, y));
+                            float* srcPixel = static_cast<float*>(srcImg->getPixelAddress(srcX, srcY));
+
+                            dstPixel[0] = srcPixel[0];
+                            dstPixel[1] = srcPixel[1];
+                            dstPixel[2] = srcPixel[2];
+                            dstPixel[3] = srcPixel[3];
+                        }
+
+                        _previoOffsetX = offsetX;
+                        _previoOffsetY = offsetY;
                     }
+                }
+            }
 
-					_previoOffsetX = offsetX;
-					_previoOffsetY = offsetY;
+        }
+        // Comrpobar si le afecta al efecto de "Imagen dentro de Imagen".
+        else if (aDonde == 1)
+        {
+            // Verificar si el clip tiene el efecto "Picture in Picture"
+            PropertySet& clipPropiedades = srcClip->getPropertySet();
+            std::string nombreEfecto = clipPropiedades.propGetString("OfxImageEffectPropName");
+
+			std::cout << "Nombre del efecto: " << nombreEfecto << std::endl;
+
+            if (nombreEfecto == "Picture in Picture" || nombreEfecto == "PIP")
+            {
+                // Aplicar el efecto de vibración
+                if (srcImg && dstImg)
+                {
+                    OfxRectI srcBounds = srcImg->getBounds();
+                    OfxRectI dstBounds = dstImg->getBounds();
+
+                    for (int y = srcBounds.y1; y < srcBounds.y2; ++y)
+                    {
+                        for (int x = srcBounds.x1; x < srcBounds.x2; ++x)
+                        {
+                            // Calcular el desplazamiento aleatorio
+                            int offsetX = 0;
+                            int offsetY = 0;
+
+                            // O = Circular, | = Vertical, - = Horizontal, / = Diagonal, \ = Diagonal Inversa
+                            switch (modo)
+                            {
+                            case 0: // Circular
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(amplitude * cos(tiempo + initialPoint));
+                                break;
+
+                            case 1: // Vertical
+                                offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                break;
+
+                            case 2: // Horizontal
+                                offsetX = static_cast<int>(amplitude * cos(tiempo + initialPoint));
+                                break;
+
+                            case 3: // Diagonal
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                break;
+
+                            case 4: // Diagonal Inversa
+                                offsetX = static_cast<int>(amplitude * sin(tiempo + initialPoint));
+                                offsetY = static_cast<int>(-amplitude * sin(tiempo + initialPoint));
+                                break;
+
+                            case 5: // Aleatorio
+                                // TODO: Implementar
+                                break;
+                            }
+
+                            // Suavizar los desplazamientos acumulándolos
+                            offsetX = static_cast<int>((_previoOffsetX + offsetX) * 0.5);
+                            offsetY = static_cast<int>((_previoOffsetY + offsetY) * 0.5);
+
+                            // Asegurarse de que los desplazamientos estén dentro de los límites
+                            int srcX = x + offsetX;
+                            int srcY = y + offsetY;
+
+                            if (srcX >= srcBounds.x1 && srcX < srcBounds.x2 && srcY >= srcBounds.y1 && srcY < srcBounds.y2)
+                            {
+                                float* dstPixel = static_cast<float*>(dstImg->getPixelAddress(x, y));
+                                float* srcPixel = static_cast<float*>(srcImg->getPixelAddress(srcX, srcY));
+
+                                dstPixel[0] = srcPixel[0];
+                                dstPixel[1] = srcPixel[1];
+                                dstPixel[2] = srcPixel[2];
+                                dstPixel[3] = srcPixel[3];
+                            }
+
+                            _previoOffsetX = offsetX;
+                            _previoOffsetY = offsetY;
+                        }
+                    }
                 }
             }
         }
+       
+
+    }
+
+    void crearConsola()
+    {
+        AllocConsole();
+
+        FILE* fp;
+        freopen_s(&fp, "CONOUT$", "w", stdout);
+        freopen_s(&fp, "CONIN$", "r", stdin);
+        freopen_s(&fp, "CONOUT$", "w", stderr);
+
+        std::cout << "Consola de debug inicializada." << std::endl;
     }
 
     virtual void getClipPreferences(OFX::ClipPreferencesSetter& clipPreferences) override
@@ -136,6 +246,7 @@ class VibraBasicPlugin : public OFX::ImageEffect
         OFX::DoubleParam* _frecuencia;
         OFX::DoubleParam* _inicial;
         OFX::ChoiceParam* _modo;
+		OFX::ChoiceParam* _aDonde;
 		int _previoOffsetX;
 		int _previoOffsetY;
 };
@@ -178,6 +289,7 @@ void VibraBasicPluginFactoria::describeInContext(OFX::ImageEffectDescriptor& des
 
     PageParamDescriptor* page = desc.definePageParam("Controls");
 
+
     //Modo
     ChoiceParamDescriptor* modoParam = desc.defineChoiceParam("Modo/Mode");
     modoParam->setLabels("Modo/Mode", "Modo/Mode", "Modo/Mode");
@@ -191,6 +303,7 @@ void VibraBasicPluginFactoria::describeInContext(OFX::ImageEffectDescriptor& des
     modoParam->appendOption("-");
     modoParam->appendOption("/");
     modoParam->appendOption("\\");
+	modoParam->appendOption("Aleatorio/Random");
     modoParam->setDefault(0);
     page->addChild(*modoParam);
 
@@ -219,6 +332,16 @@ void VibraBasicPluginFactoria::describeInContext(OFX::ImageEffectDescriptor& des
     initialPointParam->setDisplayRange(-3.14159265359, 3.14159265359);
 	//initialPointParam->setInteractDescriptor(new OFX::ParamInteractDescriptor());
     page->addChild(*initialPointParam);
+
+
+    // Panoramización o ImagenEnImagen -> Es lo que modificaremos
+	ChoiceParamDescriptor* aDonde = desc.defineChoiceParam("Donde/Where");
+	aDonde->setLabels("Panoramización/Pan", "ImagenEnImagen/ImageInImage", "Panoramización/Pan");
+	aDonde->setHint("Panoramización o ImagenEnImagen/Pan or ImageInImage");
+	aDonde->appendOption("Panoramización/Pan");
+	aDonde->appendOption("ImagenEnImagen/ImageInImage");
+    aDonde->setDefault(0);
+	page->addChild(*aDonde);
 }
 
 
@@ -238,6 +361,16 @@ namespace OFX
         {
             static VibraBasicPluginFactoria p("net.sf.openfx:vibraBasicPlugin", 1, 0);
             ids.push_back(&p);
+
+			//Crear consola de debug
+            AllocConsole();
+
+            FILE* fp;
+            freopen_s(&fp, "CONOUT$", "w", stdout);
+            freopen_s(&fp, "CONIN$", "r", stdin);
+            freopen_s(&fp, "CONOUT$", "w", stderr);
+
+            std::cout << "Consola de debug inicializada." << std::endl;
         }
     }
 }
